@@ -6463,7 +6463,7 @@
     strm.avail_in = strm.input.length;
 
     for (;;) {
-      if (strm.avail_out === 0) {
+      if (strm.avail_out === 0 || _flush_mode == Z_SYNC_FLUSH) {
         strm.output = new Uint8Array(chunkSize);
         strm.next_out = 0;
         strm.avail_out = chunkSize;
@@ -6505,9 +6505,8 @@
       // Remember real `avail_out` value, because we may patch out buffer content
       // to align utf8 strings boundaries.
       last_avail_out = strm.avail_out;
-
       if (strm.next_out) {
-        if (strm.avail_out === 0 || status === Z_STREAM_END$3) {
+        if (strm.avail_out === 0 || status === Z_STREAM_END$3 || (status ==Z_OK$3 && _flush_mode == Z_SYNC_FLUSH)) {
 
           if (this.options.to === 'string') {
 
